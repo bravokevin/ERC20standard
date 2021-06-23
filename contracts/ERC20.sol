@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 pragma solidity ^0.7.0;
 
 import "./IERC20.sol."
@@ -9,7 +10,7 @@ import "./IERC20.sol."
 @dev This follows the OpenZeppelin implementation, in where the tokens have to be created by the {_mint} function and not in the constructor
 
  */
-contract ERC20 is IERC20 {
+contract Bravo is IERC20 {
     //track the token balances of each account
     mapping(address => uint256) private _balances;
 
@@ -54,23 +55,72 @@ contract ERC20 is IERC20 {
     ///@notice implements the trnasfer funciton
     ///@dev this implementation use callback functions 
     function transfer(address recipient, uint256 amount) public virtual override returns(bool){
-        _transfer(_msgSender(), recipient, amount);
+        _transfer(msg.sender, recipient, amount);
         return true;
     }
 
 
-    ///@dev retrives the account (spender) which can transfer from the "owner" account
+    /**@dev retrives the account (spender) which can transfer from the "owner" account. giv information about the actual account that can use {transferFrom}
+    @return the remaining number of tokens that the spender is allowed to spend
+    */
+
     function allowance(address owner, address spender) public view virtual override returns(uint256){
         return allowed[owner][spender];
     }
 
-    ///@dev approve an account "spender" to spend tokens from the "owner" 
+    /**@dev approve an account "spender" to spend tokens from the "owner" (msg.sender)
+    @return a boolean value indicating tha the operation was succesfull
+    */
     function approve(address spender, uint256 amount) public virtual override returns(bool){
-        _approve(_msgSender(), spender, amount);
-        return true
+        _approve(msg.sender, spender, amount);
+        return true;
     }
 
 
 
+    /**
+    @dev allows others person to spend an specific amount of tokens of the "sender"
 
+    This functions its only allowed to be called in the case that the owner of the tokens allows to the "recipient" tho spend their monney
+     */
+    function transferFrom(
+        address sender, 
+        address recipient,
+        uint256 amount
+    ) public virtual override returns(bool) {
+
+        _transfer(sender, recipient, amount);
+
+        uint256 currentAllowance = allowed[sender][msg.sender];
+
+        require(currentAllowances >= amount, "transfer amount exceeds allowances");
+
+        unchecked {
+            _approve(sender, msg.sender, currentAllowance - amount);
+        }
+
+        return true;
+    }
+
+    /**
+    Allows the owner of the token increase the amount that the other account can spend
+     */
+    function increaseAllowance(address spender, uint256 addedValue) public virtual returns (bool){
+        _approve(msg.sender, spender, _allowances[msg.sender][spender] + addedValue);
+        return true;
+    }
+
+    /**
+    Decrease the amount of token that other account can spend from the owner of the token
+     */
+    function decreaseAllowance(address spender, uint256 subtractedValue) public virtual returns(bool) {
+        uint currentAllowance = _allowances[msg.sender][spender];
+        require(currentAllowance >= subtractedValue, "decreased amount below zero" );
+
+        unchecked {
+            _approve(msg.sender, spender, currentAllowance - subtractedValue);
+        }
+
+        return true;
+    }
 }
