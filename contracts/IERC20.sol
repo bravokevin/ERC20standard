@@ -1,4 +1,4 @@
-pragma solidity ^0.7.0;
+pragma solidity ^0.8.0;
 
 
 ///@dev interface for the ERC20 implementation. Following the EIP20
@@ -23,7 +23,7 @@ contract IERC20 {
     @return returns a boolean value indicating if the operation secceded
     
     */
-    function transfer(address _to, uint256 _value) returns(bool succes){}
+    function transfer(address _to, uint256 _value) external returns(bool succes){}
 
 
     //Transfers _value amount of tokens from address _from to address _to
@@ -46,7 +46,7 @@ contract IERC20 {
 
     //Trigger when token is transfer, including creatinos of tokens.
     ///@dev also have to be trigger when transfer 0 values
-    event Transfer(addresss indexed _owner, address indexed _spender, uint256 _value);
+    event Transfer(address indexed _owner, address indexed _spender, uint256 _value);
     
     //Trigger in a succesfull call of "approve" function >>
     event Approval(address indexed _owner, address indexed _spender, uint256 _value);
