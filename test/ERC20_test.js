@@ -1,6 +1,6 @@
 const { expect } = require("chai");
 
-describe("Bravo", function (){
+describe("ERC20", function (){
 
     let owner;
     let spender
@@ -9,20 +9,20 @@ describe("Bravo", function (){
     let contract
 
     before(async function(){
-     contract = await ethers.getContractFactory("ERC20");
+     this.contract = await ethers.getContractFactory("ERC20");
 
        [owner, spender, ...acounts] = await ethers.getSigners();
     })
 
     beforeEach(async function () {
-        ERC20Token = await contract.deploy("ERC20", "ERC")
-        await ERC20Token.deployed()
+        this.ERC20Token = await this.contract.deploy("ERC20", "ERC")
+        await this.ERC20Token.deployed()
     })
     describe("Deployment", function() {
         it("should initizlized correctly", async function() {
-            expect(await ERC20Token.name()).to.equal("ERC20");
-            expect(await ERC20Token.symbol()).to.equal("ERC")
-            expect(await ERC20Token.decimals()).to.equal(36);
+            expect(await this.ERC20Token.name()).to.equal("ERC20");
+            expect(await this.ERC20Token.symbol()).to.equal("ERC")
+            expect(await this.ERC20Token.decimals()).to.equal(36);
 
         })
     })
