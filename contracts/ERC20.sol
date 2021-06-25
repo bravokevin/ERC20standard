@@ -9,7 +9,7 @@ import "./IERC20.sol";
 @dev This follows the OpenZeppelin implementation, in where the tokens have to be created by the {_mint} function and not in the constructor
 
  */
-contract Bravo is IERC20 {
+contract ERC20 is IERC20 {
     //track the token balances of each account
     mapping(address => uint256) private _balances;
 
