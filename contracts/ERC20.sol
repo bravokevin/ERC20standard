@@ -17,7 +17,7 @@ contract Bravo is IERC20 {
     //Also contains the sum _allowed to withdrawl
     mapping(address => mapping(address => uint256)) private _allowed;
 
-    uint256 public totalSuply;
+    uint256 public override totalSuply;
     string public name;
     string public symbol;
 
@@ -173,9 +173,14 @@ contract Bravo is IERC20 {
 
         ///this is a hook (Must check the hook concept)
         _beforeTokenTransfer(sender, recipient, amount);
-        unchecked {
         uint256 senderBalance = _balances[sender];
+        require(senderBalance >= amount, " transfer amount exceeds balance");
+
+        unchecked {
+            _balances[sender] = senderBalance - amount;
         }
+
+        _balances[recipient] += amount;
 
         emit Transfer(sender, recipient, amount);
         //another hook
